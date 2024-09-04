@@ -684,7 +684,7 @@ class Bestman_sim:
             "[BestMan_Sim][Arm] \033[34mInfo\033[0m: Move end effector to goal pose finished!"
         )
 
-    def sim_execute_trajectory(self, trajectory, threshold=0.1, enable_plot=False):
+    def sim_execute_trajectory(self, trajectory, goal, threshold=0.1, enable_plot=False):
         """Execute the path planned by Planner
 
         Args:
@@ -710,7 +710,7 @@ class Bestman_sim:
 
             front_point = current_point
 
-        self.client.run(40)
+        self.client.run(10)
 
         current_joint_values = self.sim_get_current_joint_values()
         diff_angles = [abs(a - b) for a, b in zip(current_joint_values, trajectory[-1])]
@@ -722,8 +722,10 @@ class Bestman_sim:
             )
 
         print("[BestMan_Sim][Arm] \033[34mInfo\033[0m: Excite trajectory finished!")
+        result = self.sim_calculate_IK_error(goal)
+        return result
 
-    def sim_calculate_IK_error(self, goal_pose):
+    def sim_calculate_IK_error(self, goal_pose, threshold = 0.15):
         """Calculate the inverse kinematics (IK) error for performing pick-and-place manipulation of an object using a robot arm.
 
         Args:
@@ -736,7 +738,11 @@ class Bestman_sim:
             np.array(end_effector_pose.get_position())
             - np.array(goal_pose.get_position())
         )
-        return distance
+        if distance > threshold:
+            return False
+        else:
+            return True
+        # return distance
 
     # ----------------------------------------------------------------
     # functions between base and arms

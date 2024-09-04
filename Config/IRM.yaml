@@ -1,0 +1,10 @@
+Visualizer:
+  Camera:
+      dist: 2.4
+      position: [0, 0, 1.66]
+      yaw: 90.0
+      pitch: -89.9
+
+Robot:
+  init_pose: [0, 0, 0, 0.0, 0.0, "math.pi / 2"]
+  arm_init_jointValues: [0, -1.57, 2.0, -1.57, -1.57, 0]
